@@ -219,7 +219,7 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 
-The backend will be available at `http://localhost:8000`
+The backend will be available at `const API_BASE_URL = "https://kudos-grip-catfight.ngrok-free.dev/api";`
 
 ## ✅ Running Backend Tests
 

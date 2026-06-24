@@ -20,8 +20,11 @@ SECRET_KEY = os.environ.get('DJANGO_SECRETE_KEY', '')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1','rag-fx2h.onrender.com']
-
+ALLOWED_HOSTS = ['animated-genome-stem-implied.trycloudflare.com', 'floppy-infections-angeles-bind.trycloudflare.com', 
+    "localhost",
+    "127.0.0.1",
+    ".ngrok-free.dev",
+]
 
 # Application definition
 
@@ -193,4 +196,4 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 # If you need cookies/Authorization headers across origins
-CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = True

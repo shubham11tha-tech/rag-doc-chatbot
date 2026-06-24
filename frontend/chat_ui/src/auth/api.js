@@ -1,6 +1,8 @@
 import axios from 'axios'
 
-const api = axios.create({ baseURL: 'http://127.0.0.1:8000/api' })
+const api = axios.create({
+  baseURL: 'https://animated-genome-stem-implied.trycloudflare.com/api',
+})
 
 function getStoredTokens() {
   try {
@@ -24,9 +26,7 @@ let pendingRequests = []
 
 api.interceptors.request.use((config) => {
   const tokens = getStoredTokens()
-  if (tokens?.access) {
-    config.headers.Authorization = `Bearer ${tokens.access}`
-  }
+  if (tokens?.access) config.headers.Authorization = `Bearer ${tokens.access}`
   return config
 })
 
@@ -34,7 +34,7 @@ api.interceptors.response.use(
   (res) => res,
   async (error) => {
     const original = error.config
-    if (error.response?.status === 401 && !original._retry) {
+    if (error.response?.status === 401 && original && !original._retry) {
       original._retry = true
       const tokens = getStoredTokens()
       if (!tokens?.refresh) {
@@ -48,9 +48,10 @@ api.interceptors.response.use(
       }
       try {
         isRefreshing = true
-        const { data } = await axios.post('/api/auth/token/refresh/', {
-          refresh: tokens.refresh,
-        })
+        const { data } = await axios.post(
+          'https://animated-genome-stem-implied.trycloudflare.com/api/auth/token/refresh/',
+          { refresh: tokens.refresh }
+        )
         const newTokens = { ...tokens, access: data.access }
         storeTokens(newTokens)
         pendingRequests.forEach(({ resolve, original: req }) => {
@@ -58,7 +59,7 @@ api.interceptors.response.use(
           resolve(api(req))
         })
         pendingRequests = []
-        original.headers.Authorization = `Bearer ${newTokens.access}`
+        original.headers = { ...(original.headers || {}), Authorization: `Bearer ${newTokens.access}` }
         return api(original)
       } catch (e) {
         clearTokens()
@@ -80,12 +81,7 @@ export const AuthAPI = {
     return data
   },
   async register({ username, email, password, password2 }) {
-    const { data } = await api.post('/auth/register/', {
-      username,
-      email,
-      password,
-      password2,
-    })
+    const { data } = await api.post('/auth/register/', { username, email, password, password2 })
     return data
   },
   async me() {
@@ -108,12 +104,7 @@ export const RAGAPI = {
     return data
   },
   async query({ query, top_k = 4, generate = true, temperature = 0.7 }) {
-    const { data } = await api.post('/query/', {
-      query,
-      top_k,
-      generate,
-      temperature,
-    })
+    const { data } = await api.post('/query/', { query, top_k, generate, temperature })
     return data
   },
   async getDocuments() {
@@ -129,5 +120,3 @@ export const RAGAPI = {
 export function getTokens() {
   return getStoredTokens()
 }
-
-
