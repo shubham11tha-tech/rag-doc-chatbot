@@ -207,9 +207,10 @@ Add your project screenshots here.
 
 ## Author
 
-**Shubham Singh**
+**Shubham Singh AND Bhavya Sherwal**
 
 GitHub: https://github.com/shubham11tha-tech
+ GitHub:https://github.com/bhavyasherwal
 
 ## License
 
